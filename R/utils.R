@@ -7,7 +7,7 @@ create_proj_dir <- function(directory){
     stop("Directory already exists. Please specify a new project directory")
   } else{
     fs::dir_create(directory)
-    }
+  }
 }
 
 #' Function to generate unique project id
@@ -33,7 +33,7 @@ yaml_maker <- function(start_date = '`r format(Sys.time(), "%Y/%m/%d")`',
                        client_email = NULL,
                        project_id = NULL,
                        project_title = NULL,
-                       output_format = "html",
+                       output_format = "html_report",
                        ...){
   arglist <- list(
     date = list(date = start_date),
@@ -51,9 +51,6 @@ yaml_maker <- function(start_date = '`r format(Sys.time(), "%Y/%m/%d")`',
     ...
   )
 
-  out_formats <- list(pdf = "pdf_report",
-                      html = "html_report")
-
   yamlr <- function(listarg){
     no_null <- sapply(listarg, function(y) y[!sapply(y, is.null)])
     categ <- names(no_null)
@@ -66,18 +63,18 @@ yaml_maker <- function(start_date = '`r format(Sys.time(), "%Y/%m/%d")`',
           content <- sapply(
             1:length(sub),
             function(y) glue::glue("  {names(sub)[[y]]}: \'{sub[[y]]}\'")
-            )
+          )
           content[1] <- sub(pattern = " ", replacement = "-", x = content[1])
           c(header, content)
-          } else{
-            glue::glue("{.x}: \'{sub}\'")
-            }
+        } else{
+          glue::glue("{.x}: \'{sub}\'")
         }
-      )
+      }
+    )
 
     c("---",
       unlist(out),
-      glue::glue("output: CCtemplates::{out_formats[[output_format]]}"),
+      glue::glue("output: CCtemplates::{output_format}"),
       "---")
   }
   yamlr(arglist)
@@ -89,7 +86,7 @@ draft_cc <- function(file, template, metadata, package = NULL, create_dir, edit 
   if (!is.null(package)) {
     template_path = system.file(
       "rmarkdown", "templates", template, package = package
-      )
+    )
     if (!nzchar(template_path)) {
       stop("The template '", template, "' was not found in the ",
            package, " package")
@@ -169,6 +166,18 @@ null_transformer <- function(str = "NULL") {
     }
     out
   }
+}
+
+glue_null <- function(
+  ...,
+  .sep = "",
+  .envir = parent.frame(),
+  .open = "{", .close = "}",
+  .na = "NA",
+  .transformer = null_transformer(),
+  .trim = TRUE) {
+  glue::glue(..., .sep = .sep, .envir = .envir, .open = .open, .close = .close,
+             .na = .na, .transformer = .transformer, .trim = .trim)
 }
 
 headers <- list(

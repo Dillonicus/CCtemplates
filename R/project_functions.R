@@ -15,7 +15,7 @@
 #' @export
 project_create <- function(
   project_folder = "~/",
-  start_date = Sys.Date(),
+  start_date = as.character(Sys.Date()),
   client_name = NULL,
   client_email = NULL,
   statistician_name = NULL,
@@ -24,29 +24,28 @@ project_create <- function(
   version = "1.0",
   department = NULL,
   project_title = NULL,
-  output_format = "html",
+  output_format = "html_report",
   notes = ""
-  ){
-
-  out_fmt <- list(
-    pdf = "pdf_report",
-    html = "html_report")
-  template <- out_fmt[[output_format]]
+){
 
   if(!file.exists(glue::glue("{project_folder}/project_list.csv"))) {
-    file <- data.table::data.table(
-      project = c(""),
-      pi = c(""),
-      statistician = c(""),
-      start_date = c(""),
-      status = c(""),
-      status_date = c(""),
-      complete = c(""),
-      new_proj_dir = c("")
-    )
-    data.table::fwrite(x = file, file = glue::glue("{project_folder}/project_list.csv"))
+    projects <- data.table::data.table(
+      project = character(0),
+      pi = character(0),
+      statistician = character(0),
+      start_date = character(0),
+      status = character(0),
+      status_date = character(0),
+      complete = character(0),
+      proj_dir = character(0))
+
+  } else {
+
+    classes <- list(character = c(1:8))
+    projects <- data.table::fread(glue::glue("{project_folder}/project_list.csv"), colClasses = classes)
   }
-  projects <- data.table::fread(glue::glue("{project_folder}/project_list.csv"))
+  print(projects); str(projects)
+
   first_last <- list(
     "first" = ifelse(
       grepl(x = client_name, ","),
@@ -56,9 +55,13 @@ project_create <- function(
       grepl(x = client_name, ","),
       stringr::str_split(client_name, ",")[[1]][1],
       stringr::str_split(client_name, "\\s")[[1]][2])
-    )
+  )
+
   id <- proj_id(name = first_last[["last"]], existing_ids = projects[["project"]])
-  new_proj_dir <- glue::glue("{project_folder}/{department}/{first_last[['last']]}/{id}")
+  new_proj_dir <- ifelse(is.null(department),
+                         glue::glue("{project_folder}/{first_last[['last']]}/{id}"),
+                         glue::glue("{project_folder}/{department}/{first_last[['last']]}/{id}")
+  )
   create_proj_dir(new_proj_dir)
 
   proj_meta <- yaml_maker(
@@ -71,17 +74,8 @@ project_create <- function(
     project_title = project_title,
     output_format = output_format)
 
-  headers <- lapply(
-    headers,
-    function(x) glue::glue(x, .transformer = null_transformer())
-    )
-
-  names(headers) <- sapply(
-    USE.NAMES = F,
-    simplify = T,
-    names(headers),
-    function(x) glue::glue(x, .transformer = null_transformer())
-    )
+  headers <- lapply(X = headers, FUN = function(x) glue::glue(x, .transformer = null_transformer()))
+  names(headers) <- sapply(USE.NAMES = F, simplify = T, X = names(headers), FUN = function(x) glue::glue(x, .transformer = null_transformer()))
 
   proj_files <- file.path(new_proj_dir, names(headers))
   names(headers) <- proj_files
@@ -96,14 +90,14 @@ project_create <- function(
   draft_cc(
     file = glue::glue("{new_proj_dir}/memo/{id}_v{version}.Rmd"),
     metadata = proj_meta,
-    template = template,
+    template = output_format,
     package = "CCtemplates",
     edit = F,
     create_dir = T)
 
   for(fname in proj_files){
     if(!fs::file_exists(fname)) {
-    cat(headers[[fname]], file = fname)
+      cat(headers[[fname]], file = fname)
     }
   }
 
@@ -111,14 +105,16 @@ project_create <- function(
     project = id,
     pi = first_last[["last"]],
     statistician = statistician_name,
-    start_date = c(glue::glue("{start_date}")),
-    status = c(""),
-    status_date = c(""),
-    complete = c(""),
+    start_date = start_date,
+    status = c("project started"),
+    status_date = start_date,
+    complete = c("0"),
     proj_dir = path.expand(new_proj_dir))
 
-  projects <- rbind(projects, newdat, fill = TRUE)
-  data.table::fwrite(projects, glue::glue("{project_folder}/project_list.csv"))
+  print(newdat); str(newdat)
+
+  newdat <- rbind(projects, newdat, fill = TRUE)
+  data.table::fwrite(newdat, file = glue::glue("{project_folder}/project_list.csv"))
 
   message(glue::glue("Project {id} successfully created at {new_proj_dir}."))
 }
@@ -131,7 +127,10 @@ project_remove <- function(project_folder = "~/", project_id, keep_zip = TRUE){
     message("will remove all project files without")
     message("making a backup.")
     confirm <- readline(prompt = "Do you wish to proceed? (Y/N)")
-    if(confirm != "Y") stop(glue::glue("Project {project_id} has not been deleted."))
+    if(confirm == "Y") {
+      confirm2 <- readline(prompt = "Are you sure? (Y/N)")
+      if (confirm2 != "Y") stop(glue::glue("Project {project_id} has not been deleted."))}
+    else stop(glue::glue("Project {project_id} has not been deleted."))
   }
 
   projects <- data.table::fread(glue::glue("{project_folder}/project_list.csv"))
@@ -150,7 +149,7 @@ project_remove <- function(project_folder = "~/", project_id, keep_zip = TRUE){
 
   message(
     glue::glue("Project {project_id} successfully archived at {project_folder}/Completed/{project_id}.zip")
-    )
+  )
 
   fs::dir_delete(proj_path)
 
@@ -170,7 +169,3 @@ new_user <- function(project_dir = NULL, name = NULL, email = NULL) {
     statistician = name)
   write.table(file = id.file)
 }
-
-
-
-

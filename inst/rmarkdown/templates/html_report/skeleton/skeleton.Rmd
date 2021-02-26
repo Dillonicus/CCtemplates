@@ -1,0 +1,51 @@
+---
+title: "Untitled"
+date: "`r Sys.Date()`"
+project: "Project ID"
+client: "Client Name"
+statistician: "Statistician Name"
+output: CCtemplates::html_report
+---
+
+```{r setup, echo=FALSE, cache=FALSE}
+library(knitr)
+library(CCtemplates)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=FALSE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+## Design
+Present key elements of study design. Is it a retrospective or prospective study? Is it a cohort or case-control study? Are cases going to be matched? Etc.
+
+## Primary Aim
+State the primary aim of the study.
+
+## Secondary Aims
+State any secondary aims of the study.
+
+## Planned Data Analysis	
+-	Define outcomes
+-	Describe groupings
+-	Describe all planned statistical analyses. 
+-	You should describe methods that will be used to control for confounding or to examine and handle interactions
+-	Describe how missing data will be handled
+-	State what significance level will be used
+-	State how multiple comparisons will be handled if applicable
+-	Is there going to be an interim analysis and if so what will be done at that time
+-	Mention what statistical package(s) will be used
+
+## Sample Size Calculation/Power Analysis
+-	Be clear of which aim(s) is/are being used for the power analysis. Is it based on the primary aim only?
+-	List any key assumptions and include references for these
+-	Clearly state chosen significance level and power
+-	If loss-to-follow-up is expected, state if the sample size is going to be increased to account for this?
+

@@ -1,0 +1,5 @@
+---
+name: Cleveland Clinic Report (pdf_report)
+description: A custom PDF template for statistical reports
+create_dir: true
+---

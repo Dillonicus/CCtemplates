@@ -1,0 +1,5 @@
+---
+name: Cleveland Clinic Report (html_report)
+description: A custom HTML template for statistical reports
+create_dir: true
+---

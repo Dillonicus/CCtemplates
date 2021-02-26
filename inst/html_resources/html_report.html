@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"$if(lang)$ lang="$lang$" xml:lang="$lang$"$endif$>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="generator" content="pandoc" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.5.2/dom-to-image.min.js"></script>
+    <!-- Metadata -->
+
+    $for(statistician-meta)$
+    <meta name="statistician" content="$statistician-meta$" />
+    $endfor$
+
+    $if(date-meta)$
+    <meta name="date" content="$date-meta$" />
+    $endif$
+
+    $for(client-meta)$
+    <meta name="client" content="$client-meta$" />
+    $endfor$
+
+    $for(proj-meta)$
+    <meta name="project" content="project-meta" />
+    $endfor$
+
+    <title>$if(title-prefix)$$title-prefix$ - $endif$$pagetitle$</title>
+
+    $for(header-includes)$
+    $header-includes$
+    $endfor$
+
+    $if(highlightjs)$
+    <style type="text/css">code{white-space: pre;}</style>
+    <link rel="stylesheet"
+	  href="$highlightjs$/$if(highlightjs-theme)$$highlightjs-theme$$else$default$endif$.css"
+	  $if(html5)$$else$type="text/css" $endif$/>
+    <script src="$highlightjs$/highlight.js"></script>
+    <script type="text/javascript">
+      if (window.hljs && document.readyState && document.readyState === "complete") {
+	  window.setTimeout(function() {
+	      hljs.initHighlighting();
+	  }, 0);
+      }
+    </script>
+    $endif$
+
+    $if(highlighting-css)$
+    <style type="text/css">code{white-space: pre;}</style>
+    <style type="text/css">
+      $highlighting-css$
+    </style>
+    $endif$
+
+    $for(css)$
+    <link rel="stylesheet" href="$css$" $if(html5)$$else$type="text/css" $endif$/>
+    $endfor$
+
+    <!-- tabsets -->
+    <script>
+      $$(document).ready(function () {
+	  window.buildTabsets("toc");
+      });
+      $$(document).ready(function () {
+	  $$('.tabset-dropdown > .nav-tabs > li').click(function () {
+	      $$(this).parent().toggleClass('nav-tabs-open')
+	  });
+      });
+    </script>
+
+    <!-- code folding -->
+    $if(code_menu)$
+    <script>
+      $$(document).ready(function () {
+	  $if(source_embed)$
+	  window.initializeSourceEmbed("$source_embed$");
+	  $endif$
+	  $if(code_folding)$
+	  window.initializeCodeFolding("$code_folding$" === "show");
+	  $endif$
+      });
+    </script>
+    $endif$
+
+    <!-- code download -->
+    $if(source_embed)$
+    <style>
+      #rmd-source-code {
+	  display: none;
+      }
+    </style>
+    $endif$
+
+    <!-- tabsets dropdown -->
+
+    <style type="text/css">
+      .tabset-dropdown > .nav-tabs {
+	  display: inline-table;
+	  max-height: 500px;
+	  min-height: 44px;
+	  overflow-y: auto;
+	  background: white;
+	  border: 1px solid #ddd;
+	  border-radius: 4px;
+      }
+
+      .tabset-dropdown > .nav-tabs > li.active:before {
+	  content: "";
+	  font-family: 'Glyphicons Halflings';
+	  display: inline-block;
+	  padding: 10px;
+	  border-right: 1px solid #ddd;
+      }
+
+      .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+	  content: "&#xe258;";
+	  border: none;
+      }
+
+      .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+	  content: "";
+	  font-family: 'Glyphicons Halflings';
+	  display: inline-block;
+	  padding: 10px;
+	  border-right: 1px solid #ddd;
+      }
+
+      .tabset-dropdown > .nav-tabs > li.active {
+	  display: block;
+      }
+
+      .tabset-dropdown > .nav-tabs > li.active a {
+  	  padding: 0 15px !important;
+      }
+
+      .tabset-dropdown > .nav-tabs > li > a,
+      .tabset-dropdown > .nav-tabs > li > a:focus,
+      .tabset-dropdown > .nav-tabs > li > a:hover {
+	  border: none;
+	  display: inline-block;
+	  border-radius: 4px;
+	  background-color: transparent;
+      }
+
+      .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+	  display: block;
+	  float: none;
+      }
+
+      .tabset-dropdown > .nav-tabs > li {
+	  display: none;
+	  margin-left: 0 !important;
+      }
+    </style>
+
+    <!-- Extract images -->
+     <script>
+     function extracter(elem){
+       var node=elem.target.previousSibling;
+
+       var width = node.getBoundingClientRect().width*4;
+       var height = node.getBoundingClientRect().height*4;
+
+       //var format_val = $$('input:radio[name=format]:checked').val();
+
+       //if (format_val=="png") {
+       domtoimage.toSvg(node)
+          .then(function (dataUrl) {
+
+            var img = new Image();
+            img.src = dataUrl;
+
+            var canvas = document.createElement('canvas');
+            var context = canvas.getContext('2d');
+
+            canvas.width=width;
+            canvas.height=height;
+
+            var image = new Image();
+
+            image.onload = function() {
+
+              context.clearRect(0,0, width, height);
+
+              context.drawImage(image, 0, 0, width, height);
+
+              var pngData = canvas.toDataURL('image/png');
+              var link = document.createElement('a');
+              link.download = 'my-image-name.png';
+              link.href = pngData;
+              link.click();
+
+            };
+
+            image.src=dataUrl;
+
+            });
+
+      //    };
+
+      /*
+       if (format_val=="svg") {
+          domtoimage.toSvg(node)
+          .then(function (dataUrl) {
+
+            var link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = 'my-image-name.svg';
+            link.click();
+
+            });
+        };
+
+       if (format_val=="pdf") {
+         var pdf = new jsPDF('p', 'pt', 'letter');
+         source = node.firstElementChild;
+
+         specialElementHandlers = {
+           '#bypassme': function(element, renderer) {
+             return true
+           }
+         };
+
+         margins = {
+           top: 80,
+           bottom: 60,
+           left: 40,
+           width: 522
+         };
+
+         pdf.fromHTML(
+           source,
+           margins.left,
+           margins.top, {
+             'width': margins.width,
+             'elementHandlers': specialElementHandlers
+           },
+
+           function (dispose) {
+             pdf.save('Test.pdf');
+           }, margins);
+       };*/
+     };
+   </script>
+
+
+    <!-- export to word doc -->
+
+    <script>
+    function Export2Doc(element) {
+      //  _html_ will be replace with custom html
+
+      var meta= "Mime-Version: 1.0\nContent-Base: " + location.href +
+      "\nContent-Type: Multipart/related; boundary=\"NEXT.ITEM-BOUNDARY\";type=\"text/html\"\n\n--NEXT.ITEM-BOUNDARY\nContent-Type: text/html; charset=\"utf-8\"\nContent-Location: " +
+      location.href + "\n\n<!DOCTYPE html>\n<html>\n_html_</html>";
+
+      //  _styles_ will be replaced with custome css
+			var head= "<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n<style>\n_styles_\n</style>\n</head>\n";
+
+      var document_header = (
+        "<div style='mso-element:header' id='h1'>" +
+        "<p class='MsoHeader'>" +
+        "<span style = 'mso-tab-count:1'></span>" +
+        "<span style = 'mso-field-code: 'PAGE' '</span> " +
+        "</p>" +
+        "</div>")
+
+			//  _body_ will be replaced with custome body html
+			var body= "<body>_body_</body>";
+
+      var HTMLstring = $$(element).html();
+      var $$container = $$("<div>").append(HTMLstring);
+
+      $$container.find('.download_button, .nav-tabs').remove();
+      $$container.find('table tbody > :first-child').attr('class', 'firstrow');
+      $$container.find('table tbody > :last-child').attr('class', 'lastrow');
+      $$container.find('table thead.gt_col_headings > :first-child').attr('class', 'firstheader');
+
+      var imgs = $$container.find('img');
+      var options = {maxWidth: 620}
+      for (var i = 0; i < imgs.length; i++){
+
+        var w = Math.min(imgs[i].naturalWidth, options.maxWidth);
+        var h = imgs[i].naturalHeight * (w / imgs[i].naturalWidth);
+
+        imgs[i].width = w;
+        imgs[i].height = h;
+      }
+
+
+      var links = $$container.find('p > a');
+      links.each(function(){
+        $$(this).removeAttr('href');
+      });
+
+			var html = $$container.html() ;
+			var blob = new Blob(['\ufeff', html], {
+                type: 'application/msword'
+            });
+
+      var header_css = (
+        "@page Section1 {mso-header-margin:.5in; mso-title-page:yes; mso-header: h1;}" +
+        "p.MsoHeader, li.MsoHeader, div.MsoHeader {margin:0in; margin-bottom:.0001pt; mso-pagination:widow-orphan; tab-stops:center 3.0in right 6.0in; font-size:12.0pt;}"
+      );
+
+			var table_css = (
+      "<style type = 'text/css'>" +
+      "table {font-size: 9.5pt; border-collapse: collapse;margin: 2em auto;}" +
+      "table thead.gt_header tr th {text-align: left;margin: 1px;}" +
+      "table tbody tr.firstrow td {border-top: 1.5px solid black}" +
+      "table tbody tr.lastrow td {border-bottom: 1.5px solid black}" +
+      "table thead.gt_col_headings tr th {margin: 1px 0px;padding: 1px 0px;}" +
+      "table thead tr.firstheader th {border-top: 2px solid black;}" +
+      "table tbody tr td {margin:1px;}" +
+      "table tfoot tr.gt_footnotes td p {font-size:8pt;margin-bottom: 0;margin-top: 0}" +
+      "</style>")
+
+      var text_css = (
+      "<style type = 'text/css'>" +
+      //"@page WordSection1{size: 841.95pt 595.35pt;mso-page-orientation: portrait;}" +
+      "body {font-family: Arial;}" +
+      "h1, h2, h3, h4 {color: #0078bf; font-weight: 700;}" +
+      "code {font-family: 'Consolas', monospace; font-size: .95em; display: inline; background:0 0; padding: 0; margin: 0; overflow: initial; line-height: inherit; white-space: pre; max-width: initial;}" +
+      "pre {overflow: auto; margin: 2em; padding: 1em 2em; background: #f7f7f7}" +
+      "</style>"
+    )
+
+//  Image Area %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			var options = { maxWidth: 600};
+			var images = Array();
+			var img = $$(element).find('img');
+			for (var i = 0; i < img.length; i++) {
+				// Calculate dimensions of output image
+
+				var w = img[i].naturalWidth;
+				var h = img[i].naturalHeight;
+
+				// Create canvas for converting image to data URL
+				var canvas = document.createElement("CANVAS");
+				canvas.width = w;
+				canvas.height = h;
+
+				// Draw image to canvas
+				var context = canvas.getContext('2d');
+
+				context.drawImage(img[i], 0, 0, w, h);
+				// Get data URL encoding of image
+				var uri = canvas.toDataURL("image/png");
+
+				$$(img[i]).attr("src", img[i].src);
+
+				// Save encoded image to array
+				images[i] = {
+					type: uri.substring(uri.indexOf(":") + 1, uri.indexOf(";")),
+					encoding: uri.substring(uri.indexOf(";") + 1, uri.indexOf(",")),
+					location: $$(img[i]).attr("src"),
+					data: uri.substring(uri.indexOf(",") + 1)
+				};
+			}
+
+			// Prepare bottom of html file with image data
+			var imgMetaData = "\n";
+			for (var i = 0; i < images.length; i++) {
+				imgMetaData += "--NEXT.ITEM-BOUNDARY\n";
+				imgMetaData += "Content-Location: " + images[i].location + "\n";
+				imgMetaData += "Content-Type: " + images[i].type + "\n";
+				imgMetaData += "Content-Transfer-Encoding: " + images[i].encoding + "\n\n";
+				imgMetaData += images[i].data + "\n\n";
+
+			}
+			imgMetaData += "--NEXT.ITEM-BOUNDARY--";
+
+			var output = meta.replace("_html_", head.replace("_styles_", table_css + text_css) + body.replace("_body_", html)) + imgMetaData;
+
+			var url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(output);
+      filename = "report.doc";
+
+      var downloadLink = document.createElement("a");
+
+      document.body.appendChild(downloadLink);
+
+      if (navigator.msSaveOrOpenBlob) {
+        navigator.msSaveOrOpenBlob(blob, filename);
+        } else {
+          downloadLink.href = url;
+          downloadLink.download = filename;
+          downloadLink.click();
+          }
+          document.body.removeChild(downloadLink);
+
+          }
+    </script>
+
+    <!-- add tab switcher -->
+    <script>
+      $$( document ).ready(function() {
+        // Add click action to switch tabs for in-text links that navigate to tab content
+        $$('#content p a, #toc a').each(function(){
+          var link = $$(this).attr('href');
+          var id = link.substr(link.indexOf("#"), link.length);
+          var clicker = "$$('[aria-controls=" + id.substr(id.indexOf("#")+1, id.length) + "]').trigger('click')";
+
+          if( $$(id).parent().attr('class') == "tab-content" ) {
+            $$(this).attr('onclick', clicker);
+            }
+
+        });
+      });
+    </script>
+
+</head>
+
+<body class="preload">
+
+   $if(html_report)$
+   <!-- html_report start -->
+   <div class="book with-summary">
+      <div class="book-summary">
+        <ul>
+          <div class="ccheader"></div>
+          <li class="divider"></li>
+        </ul>
+        <span id="proj-info">
+         $for(statistician)$
+         $if(statistician.name)$
+            $if(statistician.email)$
+            <p><a href="" id="statistician_email">From: $statistician.name$</a></p>
+            <script>
+            document.getElementById("statistician_email").href = 'mailto:' + '$statistician.email$';
+            </script>
+            $else$
+            <p><a>From: $statistician.name$</a></p>
+            $endif$
+            $else$
+            <p><a>From: $statistician$</a></p>
+         $endif$
+         $endfor$
+
+         $for(client)$
+         $if(client.name)$
+            $if(client.email)$
+            <p><a href="" id="client_email">To: $client.name$</a></p>
+            <script>
+            document.getElementById("client_email").href = 'mailto:' + '$client.email$';
+            </script>
+            $else$
+            <p><a>To: $client.name$</a></p>
+            $endif$
+            $else$
+            <p><a>To: $client$</a></p>
+         $endif$
+         $endfor$
+
+         $for(project)$
+         $if(project.id)$
+            $if(project.name)$
+            <p><a>Re: Project $proj.id$: $proj.name$</a></p>
+            $else$
+            <p><a>Re: Project $project.id$</a></p>
+             <script>
+              document.getElementById("statistician_email").href = document.getElementById("statistician_email").href + '?subject=Project%20' + '$project.id$';
+              document.getElementById("client_email").href = document.getElementById("client_email").href + '?subject=Project%20' + '$project.id$';
+         </script>
+            $endif$
+         $else$
+         <p><a>Re: Project $project$</a><p>
+         <script>
+              document.getElementById("statistician_email").href = document.getElementById("statistician_email").href + '?subject=Project%20' + '$project$';
+              document.getElementById("client_email").href = document.getElementById("client_email").href + '?subject=Project%20' + '$project$';
+         </script>
+         $endif$
+         $endfor$
+
+        $if(date)$
+        <p><a>Date: $date$</a></p>
+        $endif$
+     </span>
+        <nav role="navigation" id="toc">
+          $toc$
+          <button id="report_button" onclick="Export2Doc('#content')">Download Report</button>
+        </nav>
+
+      </div>
+      <div class="book-body fixed">
+        <div class="body-inner">
+          <div class="book-header fixed">
+            <a class="btn pull-left js-toolbar-action toggle-sidebar" aria-label="Toggle Sidebar" title="Toggle Sidebar" href="#">
+              <span class="glyphicon glyphicon-menu-hamburger"></span>
+            </a>
+          </div>
+          <div class="page-wrapper">
+            <div class="page-inner">
+              <section id="content" class="normal">
+   $endif$
+
+
+   $if(code_menu)$
+   <div class="btn-group pull-right">
+     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+     <ul class="dropdown-menu" style="min-width: 50px;">
+	    $if(code_folding)$
+	    <li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+	    <li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+	    $if(source_embed)$
+	    <li role="separator" class="divider"></li>
+	    $endif$
+	    $endif$
+	    $if(source_embed)$
+	    <li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+	    $endif$
+     </ul>
+   </div>
+   $endif$
+
+   $for(include-before)$
+   $include-before$
+   $endfor$
+
+   $if(title)$
+   <h1 class="title">$title$</h1>
+   $endif$
+   $if(subtitle)$
+   <h1 class="subtitle">$subtitle$</h1>
+   $endif$
+
+
+<!-- Don't indent these lines or it will mess pre blocks indentation -->
+
+$if(html_report)$
+$body$
+$endif$
+
+
+
+   $for(include-after)$
+   $include-after$
+   $endfor$
+
+
+   $if(html_report)$
+  </section>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+   $endif$
+
+
+
+
+  <script>
+    $$(document).ready(function () {
+
+	// add bootstrap table styles to pandoc tables
+	$$('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+
+ 	$if(thumbnails)$
+ 	$$('#content img').addClass("image-thumb");
+	$endif$
+
+	$if(lightbox)$
+	$$('#content img').addClass("image-lb");
+	$$('#content').magnificPopup({
+	    type:'image',
+	    closeOnContentClick: false,
+	    closeBtnInside: false,
+	    delegate: 'img',
+	    gallery: {enabled: $gallery$ },
+	    image: {
+	        verticalFit: true,
+		titleSrc: 'alt'
+	    }
+ 	});
+ 	$endif$
+    });
+  </script>
+
+
+
+  $if(mathjax-url)$
+  <!-- dynamically load mathjax for compatibility with self-contained -->
+  <script>
+    (function () {
+	var script = document.createElement("script");
+	script.type = "text/javascript";
+	script.src  = "$mathjax-url$";
+	document.getElementsByTagName("head")[0].appendChild(script);
+    })();
+  </script>
+  $endif$
+
+</body>
+</html>

@@ -1,0 +1,19 @@
+Package: CCtemplates
+Maintainer: Dillon Corrigan <corrigd3@ccf.org>
+Authors@R: c(person("Dillon", "Corrigan", email="corrigd3@ccf.org",
+    role=c("aut","cre")))
+Version: 0.1.0
+Date: 2020-11-05
+License: GPL (>= 2)
+Encoding: UTF-8
+Title: Output formats and templates for 'rmarkdown' documents
+Description: HTML formats and templates for 'rmarkdown' documents formatted for statistical reporting at Cleveland Clinic
+Imports: 
+    knitr,
+    rmarkdown,
+    bookdown,
+    htmltools
+Suggests:
+    questionr
+RoxygenNote: 7.1.1
+VignetteBuilder: knitr

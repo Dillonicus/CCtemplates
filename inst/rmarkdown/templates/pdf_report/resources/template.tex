@@ -1,0 +1,230 @@
+\documentclass[10pt,$if(lang)$$babel-lang$,$endif$$if(papersize)$$papersize$,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{article}
+
+\usepackage[$if(geometry)$$geometry$,$endif$ top=1in, bottom=1in, left=1in, right=1in]{geometry}
+
+\newcommand*{\authorfont}{\fontfamily{phv}\selectfont}
+
+$if(fontfamily)$
+\usepackage[$fontfamilyoptions$]{$fontfamily$}
+$else$
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+%\usepackage{fontspec}
+%\setmainfont{Arial}
+$endif$
+
+\usepackage{xcolor}
+\definecolor{ccfblue}{HTML}{0078bf}
+\definecolor{ccfblack}{HTML}{4b4b45}
+\definecolor{ccfgreen}{HTML}{00843d}
+
+\usepackage{abstract}
+\renewcommand{\abstractname}{}    % clear the title
+\renewcommand{\absnamepos}{empty} % originally center
+\newcommand{\blankline}{\quad\pagebreak[2]}
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}%
+  }
+
+\usepackage{longtable,booktabs}
+
+\usepackage{parskip}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\titlespacing\section{0pt}{12pt plus 4pt minus 2pt}{6pt plus 2pt minus 2pt}
+\titlespacing\subsection{0pt}{12pt plus 4pt minus 2pt}{6pt plus 2pt minus 2pt}
+
+\usepackage{titling}
+\setlength{\droptitle}{-.25cm}
+
+%\setlength{\parindent}{0pt}
+%\setlength{\parskip}{6pt plus 2pt minus 1pt}
+%\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setlength{\parskip}{12pt}
+
+\usepackage[$if(fontenc)$$fontenc$$else$T1$endif$]{fontenc}
+\usepackage[utf8]{inputenc}
+\linespread{1.05}
+
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\fancypagestyle{plain}
+{
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.0pt}
+\renewcommand{\footrulewidth}{0.0pt}
+
+\fancyfoot[C]{\fontsize{8}{6}\sffamily\color{ccfblack} Page \thepage \ of \pageref*{LastPage}}
+}
+
+\pagestyle{plain}
+
+\usepackage{titlesec}
+\titleformat*{\section}{\fontsize{12}{10}\bfseries}
+\titleformat*{\subsection}{\bfseries}
+\titleformat*{\subsubsection}{\fontsize{10}{8}}
+
+\makeatletter
+\@ifpackageloaded{hyperref}{}{%
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+}
+\@ifpackageloaded{color}{
+    \PassOptionsToPackage{usenames,dvipsnames}{color}
+}{%
+    \usepackage[usenames,dvipsnames]{color}
+}
+\makeatother
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={$from$},
+            pdfkeywords = {$if(keywords)$$keywords$$endif$},
+            pdftitle={$subject$},
+            colorlinks=true,
+            citecolor=$if(citecolor)$$citecolor$$else$blue$endif$,
+            urlcolor=$if(urlcolor)$$urlcolor$$else$blue$endif$,
+            linkcolor=$if(linkcolor)$$linkcolor$$else$magenta$endif$,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+
+
+\setcounter{secnumdepth}{0}
+
+$if(listings)$
+\usepackage{listings}
+$endif$
+$if(lhs)$
+\lstnewenvironment{code}{\lstset{language=r,basicstyle=\small\ttfamily}}{}
+$endif$
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+$if(verbatim-in-note)$
+\usepackage{fancyvrb}
+$endif$
+$if(tables)$
+\usepackage{longtable}
+$endif$
+
+\newcommand\makeheaderblock{
+\begin{minipage}{0.5\textwidth}
+\raggedright
+$for(client)$
+  $if(client.name)$
+    $if(client.email)$
+    To: $client.name$ ($client.email$)
+    $else$
+    To: $client.name$
+    $endif$
+  $else$
+  To: $client$
+  $endif$
+$endfor$
+
+$for(statistician)$
+  $if(statistician.name)$
+    $if(statistician.email)$
+    From: $statistician.name$ ($statistician.email$)
+    $else$
+    From: $statistician.name$
+    $endif$
+  $else$
+  From: $statistician$
+  $endif$
+$endfor$
+
+$if(project)$
+Project: $project$
+$endif$
+
+$if(date)$
+Date: $date$
+$endif$
+
+\end{minipage}
+}
+
+$if(natbib)$
+\usepackage{natbib}
+\bibliographystyle{$if(biblio-style)$$biblio-style$$else$plainnat$endif$}
+$endif$
+$if(biblatex)$
+\usepackage$if(biblio-style)$[style=$biblio-style$]$endif${biblatex}
+$if(biblatexoptions)$\ExecuteBibliographyOptions{$for(biblatexoptions)$$biblatexoptions$$sep$,$endfor$}$endif$
+$for(bibliography)$
+\addbibresource{$bibliography$}
+$endfor$
+$endif$
+$if(listings)$
+\usepackage{listings}
+$endif$
+
+\usepackage{setspace}
+
+$if(graphics)$
+\usepackage[export]{adjustbox}
+$endif$
+
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+\def\citeapos#1{\citeauthor{#1}'s (\citeyear{#1})}
+\begin{document}
+% Here's where it starts to differ from my statement template ----
+
+\color{ccfblack}
+\hfill
+\begin{minipage}{0.5\textwidth}
+\raggedleft
+\includegraphics[width=5cm]{CC.png} \\
+Section of Biostatistics\\
+Quantitative Health Sciences\\
+9500 Euclid Ave., Cleveland, OH 44195\\
+\end{minipage}
+\hrule
+
+\setlength{\tabcolsep}{1em}
+\renewcommand{\arraystretch}{1.5}
+
+\vspace{0.25cm}
+
+\makeheaderblock
+
+\vspace{0.25cm}
+
+$body$
+
+$if(natbib)$
+$if(bibliography)$
+$if(biblio-title)$
+$if(book-class)$
+\renewcommand\bibname{$biblio-title$}
+$else$
+\renewcommand\refname{$biblio-title$}
+$endif$
+$endif$
+\bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
+
+$endif$
+$endif$
+
+$if(biblatex)$
+\printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
+$endif$
+
+$for(include-after)$
+$include-after$
+$endfor$
+
+\end{document}
+

@@ -6,7 +6,7 @@
 \usage{
 project_create(
   project_folder = "~/",
-  start_date = Sys.Date(),
+  start_date = as.character(Sys.Date()),
   client_name = NULL,
   client_email = NULL,
   statistician_name = NULL,
@@ -15,7 +15,7 @@ project_create(
   version = "1.0",
   department = NULL,
   project_title = NULL,
-  output_format = "html",
+  output_format = "html_report",
   notes = ""
 )
 }

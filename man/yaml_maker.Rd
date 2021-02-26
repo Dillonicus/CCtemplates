@@ -14,7 +14,7 @@ yaml_maker(
   client_email = NULL,
   project_id = NULL,
   project_title = NULL,
-  output_format = "html",
+  output_format = "html_report",
   ...
 )
 }

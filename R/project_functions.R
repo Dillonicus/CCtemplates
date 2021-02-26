@@ -44,7 +44,6 @@ project_create <- function(
     classes <- list(character = c(1:8))
     projects <- data.table::fread(glue::glue("{project_folder}/project_list.csv"), colClasses = classes)
   }
-  print(projects); str(projects)
 
   first_last <- list(
     "first" = ifelse(
@@ -111,8 +110,6 @@ project_create <- function(
     complete = c("0"),
     proj_dir = path.expand(new_proj_dir))
 
-  print(newdat); str(newdat)
-
   newdat <- rbind(projects, newdat, fill = TRUE)
   data.table::fwrite(newdat, file = glue::glue("{project_folder}/project_list.csv"))
 
@@ -122,40 +119,46 @@ project_create <- function(
 #' @export
 project_remove <- function(project_folder = "~/", project_id, keep_zip = TRUE){
 
-  if (keep_zip != TRUE) {
+  if (keep_zip == FALSE) {
     message("CAUTION! Setting `keep_zip` to FALSE")
     message("will remove all project files without")
     message("making a backup.")
     confirm <- readline(prompt = "Do you wish to proceed? (Y/N)")
+
     if(confirm == "Y") {
       confirm2 <- readline(prompt = "Are you sure? (Y/N)")
-      if (confirm2 != "Y") stop(glue::glue("Project {project_id} has not been deleted."))}
-    else stop(glue::glue("Project {project_id} has not been deleted."))
+      if(confirm2 == "Y") {
+        fs::dir_delete(proj_path)
+        message(glue::glue("All files in {proj_path} have been deleted."))
+      } else {
+        stop(glue::glue("Project {project_id} has not been deleted."))
+      }
+    } else {
+      stop(glue::glue("Project {project_id} has not been deleted."))
+    }
+  } else {
+
+    projects <- data.table::fread(glue::glue("{project_folder}/project_list.csv"))
+    proj_path <- projects[project == project_id, proj_dir]
+
+    if(!fs::dir_exists(glue::glue("{path.expand(project_folder)}/Completed"))) {
+      fs::dir_create(glue::glue("{path.expand(project_folder)}/Completed"))
+      }
+
+    zipfile <- c(glue::glue("{path.expand(project_folder)}/Completed/{project_id}.zip"))
+    files <- c(glue::glue("./{list.files(proj_path)}"))
+    zip::zip(
+      zipfile = zipfile,
+      files = files,
+      root = proj_path)
+
+    message(
+      glue::glue("Project {project_id} successfully archived at {project_folder}/Completed/{project_id}.zip")
+      )
+
+    fs::dir_delete(proj_path)
+    message(glue::glue("All files in {proj_path} have been deleted."))
   }
-
-  projects <- data.table::fread(glue::glue("{project_folder}/project_list.csv"))
-  proj_path <- projects[project == project_id, proj_dir]
-
-  if(!fs::dir_exists(glue::glue("{path.expand(project_folder)}/Completed"))) {
-    fs::dir_create(glue::glue("{path.expand(project_folder)}/Completed"))
-  }
-
-  zipfile <- c(glue::glue("{path.expand(project_folder)}/Completed/{project_id}.zip"))
-  files <- c(glue::glue("./{list.files(proj_path)}"))
-  zip::zip(
-    zipfile = zipfile,
-    files = files,
-    root = proj_path)
-
-  message(
-    glue::glue("Project {project_id} successfully archived at {project_folder}/Completed/{project_id}.zip")
-  )
-
-  fs::dir_delete(proj_path)
-
-  message(
-    glue::glue("All files in {proj_path} have been deleted.")
-  )
 }
 
 #' Function to create a new user file that will be used as defaults when creating a new project.

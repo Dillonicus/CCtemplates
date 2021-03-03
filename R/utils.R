@@ -54,23 +54,40 @@ yaml_maker <- function(start_date = '`r format(Sys.time(), "%Y/%m/%d")`',
   yamlr <- function(listarg){
     no_null <- sapply(listarg, function(y) y[!sapply(y, is.null)])
     categ <- names(no_null)
-    out <- purrr::map(
-      .x = categ,
-      .f = ~{
-        sub <- no_null[[.x]]
-        if(length(sub) > 1){
-          header <- glue::glue("{.x}: ")
+    # out <- purrr::map(
+    #   .x = categ,
+    #   .f = ~{
+    #     sub <- no_null[[.x]]
+    #     if(length(sub) > 1){
+    #       header <- glue::glue("{.x}: ")
+    #       content <- sapply(
+    #         1:length(sub),
+    #         function(y) glue::glue("  {names(sub)[[y]]}: \'{sub[[y]]}\'")
+    #       )
+    #       content[1] <- sub(pattern = " ", replacement = "-", x = content[1])
+    #       c(header, content)
+    #     } else{
+    #       glue::glue("{.x}: \'{sub}\'")
+    #     }
+    #   }
+    # )
+    #
+    out <- lapply(
+      X = categ,
+      FUN = function(x) {
+        sub <- no_null[[x]]
+        if(length(sub) > 1) {
+          header <- glue::glue("{x}: ")
           content <- sapply(
             1:length(sub),
             function(y) glue::glue("  {names(sub)[[y]]}: \'{sub[[y]]}\'")
-          )
+            )
           content[1] <- sub(pattern = " ", replacement = "-", x = content[1])
           c(header, content)
-        } else{
-          glue::glue("{.x}: \'{sub}\'")
+        } else {
+          glue::glue("{x}: \'{sub}\'")
         }
-      }
-    )
+      })
 
     c("---",
       unlist(out),

@@ -1,4 +1,10 @@
-#' Function to create a new project.
+#' Create a new project
+#'
+#' This function creates a new project folder within a main project directory.
+#' The new project is then added to an automatically created tracking document.
+#' Within the project folders are various sub-folders and files, pre-populated
+#' with project-specific information.
+#'
 #' @param project_folder Directory where project files are stored (usually a network drive location).
 #' @param start_date Start date of project. Defaults to today's date.
 #' @param client_name Name of PI/Client.
@@ -116,6 +122,14 @@ project_create <- function(
   message(glue::glue("Project {id} successfully created at {new_proj_dir}."))
 }
 
+#' Archive and/or delete an existing project.
+#'
+#' This function will archive an existing project, copy the archive to another
+#' folder, and delete the original project folder.
+#'
+#' @param project_folder Directory where project files are stored (usually a network drive location).
+#' @param project_id The project ID for the project to be archived/deleted (found in the project_list.csv file)
+#' @param keep_zip Option to keep archive or to delete project without archiving (not recommended)
 #' @export
 project_remove <- function(project_folder = "~/", project_id, keep_zip = TRUE){
 
@@ -161,8 +175,6 @@ project_remove <- function(project_folder = "~/", project_id, keep_zip = TRUE){
   }
 }
 
-#' Function to create a new user file that will be used as defaults when creating a new project.
-#' @param project_dir Character vector that defines where
 new_user <- function(project_dir = NULL, name = NULL, email = NULL) {
   id.file <- glue::glue("{project_dir}/{name}_id.txt")
   if(file.exists(glue::glue(id.file))) {

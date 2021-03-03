@@ -3,7 +3,7 @@ Maintainer: Dillon Corrigan <corrigd3@ccf.org>
 Authors@R: c(person("Dillon", "Corrigan", email="corrigd3@ccf.org",
     role=c("aut","cre")))
 Version: 0.1.0
-Date: 2020-11-05
+Date: 2021-03-01
 License: GPL (>= 2)
 Encoding: UTF-8
 Title: Output formats and templates for 'rmarkdown' documents
@@ -12,6 +12,11 @@ Imports:
     knitr,
     rmarkdown,
     bookdown,
+    data.table,
+    glue,
+    stringr,
+    fs,
+    xfun,
     htmltools
 Suggests:
     questionr

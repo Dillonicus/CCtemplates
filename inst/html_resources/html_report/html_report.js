@@ -105,4 +105,4 @@ const head = document.head;
 const table_style = document.createElement("style");
 table_style.id = "html-table-css-variables";
 table_style.innerHTML = table_css_vars;
-head.appendChild(table_style);
+// head.appendChild(table_style);

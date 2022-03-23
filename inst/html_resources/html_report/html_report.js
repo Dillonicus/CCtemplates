@@ -15,8 +15,8 @@ $( document ).ready(function() {
     $("body").removeClass("preload");
     
     // Remove any automatically generated styling in the body of the document.
-    $('#content style').remove();
-    $('img').attr('width', '');
+    //$('#content style').remove();
+    //$('img').attr('width', '');
 
     // Add download buttons
     $('#content table, #content img').after("<button class='download_button'>Download</button>");
@@ -105,4 +105,4 @@ const head = document.head;
 const table_style = document.createElement("style");
 table_style.id = "html-table-css-variables";
 table_style.innerHTML = table_css_vars;
-// head.appendChild(table_style);
+//head.appendChild(table_style);
